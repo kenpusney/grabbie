@@ -16,7 +16,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/client")
-@Secured({"USER"})
 public class ClientController {
 
     @Autowired

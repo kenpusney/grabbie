@@ -3,13 +3,15 @@ package net.kimleo.grabbie.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @Configuration
-public class AuthenticationConfiguration extends GlobalAuthenticationConfigurerAdapter {
-
+public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${grabbie.admin.username}")
     private String adminUsername;
+
 
     @Value("${grabbie.admin.password}")
     private String adminPassword;
@@ -19,8 +21,15 @@ public class AuthenticationConfiguration extends GlobalAuthenticationConfigurerA
 
     @Value("${grabbie.app.password}")
     private String appPassword;
+
     @Override
-    public void init(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable();
+        http.authorizeRequests().antMatchers("/**").hasRole("USER").and().httpBasic();
+    }
+
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
                 .withUser(adminUsername).password(adminPassword).roles("ADMIN", "USER")
                 .and()

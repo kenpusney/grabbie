@@ -15,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/task")
-@Secured("USER")
 public class TaskController {
 
     @Autowired

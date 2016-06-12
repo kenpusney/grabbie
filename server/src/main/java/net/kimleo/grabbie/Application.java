@@ -6,12 +6,13 @@ import net.kimleo.grabbie.model.Task;
 import net.kimleo.grabbie.repository.ClientRepo;
 import net.kimleo.grabbie.repository.ExecRepo;
 import net.kimleo.grabbie.repository.TaskRepo;
-import org.omg.PortableInterceptor.ClientRequestInfo;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import java.util.Date;
 
@@ -42,7 +43,5 @@ public class Application {
             execRepo.save(executed);
         };
     }
-
-
 
 }

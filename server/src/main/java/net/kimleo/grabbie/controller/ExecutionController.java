@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/execution")
-@Secured({"USER"})
 public class ExecutionController {
 
     @Autowired
@@ -26,7 +25,6 @@ public class ExecutionController {
     TaskController taskController;
 
     @RequestMapping(method = RequestMethod.POST)
-    @Secured({"ADMIN"})
     public ResponseEntity<Execution> createExecution(@RequestBody Execution execution) {
         execution = execRepo.save(execution);
         return ResponseEntity.created(URI.create("/execution/" + execution.getId()))
