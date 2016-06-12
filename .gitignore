@@ -4,4 +4,5 @@ out
 build
 *.class
 .DS_Store
-
+gradle
+.gradle
