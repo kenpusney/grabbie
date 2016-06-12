@@ -59,12 +59,12 @@ class Execution(object):
 if __name__ == '__main__':
     client = Client("localhost")
     while True:
- #       try:
-        time.sleep(3)
-        client.getUnexecutedTask().execute()
-#        except KeyboardInterrupt:
-#            print("User Interrupted")
-#            break
-#        except:
-#            print("An error occured")
-#            pass
+        try:
+            time.sleep(3)
+            client.getUnexecutedTask().execute()
+        except KeyboardInterrupt:
+            print("User Interrupted")
+            break
+        except:
+            print("An error occured")
+            pass

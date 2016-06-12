@@ -12,7 +12,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${grabbie.admin.username}")
     private String adminUsername;
 
-
     @Value("${grabbie.admin.password}")
     private String adminPassword;
 
