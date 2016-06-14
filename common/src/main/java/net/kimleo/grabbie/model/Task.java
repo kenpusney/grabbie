@@ -3,6 +3,7 @@ package net.kimleo.grabbie.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Arrays;
 
 @Entity
 public class Task {
@@ -45,5 +46,14 @@ public class Task {
 
     public void setArgs(String[] args) {
         this.args = args;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", command='" + command + '\'' +
+                ", args=" + Arrays.toString(args) +
+                '}';
     }
 }

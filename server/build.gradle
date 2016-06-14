@@ -15,7 +15,7 @@ apply plugin: 'spring-boot'
 apply plugin: 'idea'
 
 jar {
-    baseName = 'grabbie'
+    baseName = 'grabbie-server'
     version = '0.0.1-SNAPSHOT'
 }
 sourceCompatibility = 1.8
@@ -27,6 +27,7 @@ repositories {
 
 
 dependencies {
+    compile project(":common")
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-hateoas')
     compile('org.springframework.boot:spring-boot-starter-web')

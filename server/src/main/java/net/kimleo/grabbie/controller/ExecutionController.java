@@ -4,7 +4,6 @@ import net.kimleo.grabbie.model.Execution;
 import net.kimleo.grabbie.repository.ExecRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -19,7 +18,7 @@ public class ExecutionController {
     private ExecRepo execRepo;
 
     @Autowired
-    ClientController clientController;
+    AgentController agentController;
 
     @Autowired
     TaskController taskController;
@@ -45,7 +44,7 @@ public class ExecutionController {
             return ResponseEntity.badRequest().body(null);
         }
         if (clientId != null)
-            return clientController.getClientExecution(clientId, executed);
+            return agentController.getClientExecution(clientId, executed);
         else if (taskId != null)
             return taskController.getTaskExecution(taskId, executed);
         else

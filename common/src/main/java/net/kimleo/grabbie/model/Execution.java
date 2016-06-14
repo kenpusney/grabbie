@@ -11,7 +11,7 @@ public class Execution {
     Long id;
 
     @ManyToOne
-    Client client;
+    Agent agent;
 
     @ManyToOne
     Task task;
@@ -26,8 +26,8 @@ public class Execution {
     public Execution() {
     }
 
-    public Execution(Client client, Task task) {
-        this.client = client;
+    public Execution(Agent agent, Task task) {
+        this.agent = agent;
         this.task = task;
     }
 
@@ -39,12 +39,12 @@ public class Execution {
         this.id = id;
     }
 
-    public Client getClient() {
-        return client;
+    public Agent getAgent() {
+        return agent;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setAgent(Agent agent) {
+        this.agent = agent;
     }
 
     public Task getTask() {
@@ -77,5 +77,17 @@ public class Execution {
 
     public void setResult(String result) {
         this.result = result;
+    }
+
+    @Override
+    public String toString() {
+        return "Execution{" +
+                "id=" + id +
+                ", agent=" + agent +
+                ", task=" + task +
+                ", result='" + result + '\'' +
+                ", executed=" + executed +
+                ", date=" + date +
+                '}';
     }
 }

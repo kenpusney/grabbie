@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Client {
+public class Agent {
     @Id
     @GeneratedValue
     Long id;
@@ -14,10 +14,10 @@ public class Client {
     @Column(unique = true)
     String url;
 
-    public Client() {
+    public Agent() {
     }
 
-    public Client(String url) {
+    public Agent(String url) {
         this.url = url;
     }
 
@@ -35,5 +35,13 @@ public class Client {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    @Override
+    public String toString() {
+        return "Agent{" +
+                "id=" + id +
+                ", url='" + url + '\'' +
+                '}';
     }
 }
