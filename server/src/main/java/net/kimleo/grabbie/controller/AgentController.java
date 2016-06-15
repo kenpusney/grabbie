@@ -1,20 +1,31 @@
 package net.kimleo.grabbie.controller;
 
+import net.kimleo.grabbie.component.Navigator;
 import net.kimleo.grabbie.model.Agent;
 import net.kimleo.grabbie.model.Execution;
 import net.kimleo.grabbie.repository.AgentRepo;
 import net.kimleo.grabbie.repository.ExecRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 
 @RestController
 @RequestMapping("/agent")
 public class AgentController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AgentController.class);
+
+    @Autowired
+    @Qualifier("internalNavigator")
+    Navigator navigator;
 
     @Autowired
     private AgentRepo agentRepo;
@@ -25,13 +36,21 @@ public class AgentController {
     public ResponseEntity<Agent> createClient(@RequestBody Agent agent) {
         Agent existedAgent = agentRepo.findByUrl(agent.getUrl());
         if (existedAgent != null) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .location(URI.create("/agent/" + existedAgent.getId()))
-                    .body(existedAgent);
+            if (existedAgent.getLastActiveTime() != null
+                    && System.currentTimeMillis() - existedAgent.getLastActiveTime().getTime() < 5000) {
+                LOGGER.warn("Conflict connection found for agent {}", existedAgent);
+                return ResponseEntity
+                        .status(HttpStatus.CONFLICT)
+                        .location(URI.create(navigator.agent(existedAgent.getId())))
+                        .body(existedAgent);
+            } else {
+                LOGGER.warn("Previous connection found for agent {}", existedAgent);
+                agent = existedAgent;
+            }
         }
+        agent.setLastActiveTime(new Date());
         agent = agentRepo.save(agent);
-        return ResponseEntity.created(URI.create("/agent/" + agent.getId()))
+        return ResponseEntity.created(URI.create(navigator.agent(agent.getId())))
                 .body(agent);
     }
 

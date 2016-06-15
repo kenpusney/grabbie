@@ -1,10 +1,12 @@
 package net.kimleo.grabbie.controller;
 
+import net.kimleo.grabbie.component.Navigator;
 import net.kimleo.grabbie.model.Execution;
 import net.kimleo.grabbie.model.Task;
 import net.kimleo.grabbie.repository.ExecRepo;
 import net.kimleo.grabbie.repository.TaskRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -22,10 +24,14 @@ public class TaskController {
     @Autowired
     private ExecRepo execRepo;
 
+    @Autowired
+    @Qualifier("internalNavigator")
+    Navigator navigator;
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
         task = taskRepo.save(task);
-        return ResponseEntity.created(URI.create("/task/" + task.getId()))
+        return ResponseEntity.created(URI.create(navigator.task(task.getId())))
                 .body(task);
     }
 

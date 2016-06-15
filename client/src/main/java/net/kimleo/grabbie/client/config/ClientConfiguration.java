@@ -2,7 +2,7 @@ package net.kimleo.grabbie.client.config;
 
 import net.kimleo.grabbie.client.agent.AgentInfo;
 import net.kimleo.grabbie.client.component.IgnoreHttpStatusHandler;
-import net.kimleo.grabbie.client.component.Navigator;
+import net.kimleo.grabbie.component.Navigator;
 import net.kimleo.grabbie.model.Agent;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -27,6 +27,12 @@ public class ClientConfiguration {
 
     @Value("${grabbie.agent.id}")
     String clientId;
+
+
+    @Bean
+    Navigator navigator(@Value("${grabbie.server.baseUrl}") String baseUrl) {
+        return new Navigator(baseUrl);
+    }
 
     @Bean
     RestTemplate restTemplate(@Value("${grabbie.app.username}") String username,

@@ -1,6 +1,7 @@
 package net.kimleo.grabbie.client.component;
 
 import net.kimleo.grabbie.client.agent.AgentInfo;
+import net.kimleo.grabbie.component.Navigator;
 import net.kimleo.grabbie.model.Execution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
