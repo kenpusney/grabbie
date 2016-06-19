@@ -5,6 +5,7 @@ import net.kimleo.grabbie.model.Execution;
 import net.kimleo.grabbie.model.Task;
 import net.kimleo.grabbie.repository.ExecRepo;
 import net.kimleo.grabbie.repository.TaskRepo;
+import net.kimleo.grabbie.service.ExecService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -21,8 +22,9 @@ public class TaskController {
 
     @Autowired
     private TaskRepo taskRepo;
+
     @Autowired
-    private ExecRepo execRepo;
+    private ExecService execService;
 
     @Autowired
     @Qualifier("internalNavigator")
@@ -44,9 +46,6 @@ public class TaskController {
     public ResponseEntity<List<Execution>> getTaskExecution(
             @PathVariable Long id,
             @RequestParam(value = "executed", required = false) Boolean executed) {
-        if (executed != null) {
-            return ResponseEntity.ok(execRepo.findByTaskIdAndExecuted(id, executed));
-        }
-        return ResponseEntity.ok(execRepo.findByTaskId(id));
+        return ResponseEntity.ok(execService.getTaskExecution(id, executed));
     }
 }

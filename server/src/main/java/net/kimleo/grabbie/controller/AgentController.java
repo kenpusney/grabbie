@@ -5,6 +5,7 @@ import net.kimleo.grabbie.model.Agent;
 import net.kimleo.grabbie.model.Execution;
 import net.kimleo.grabbie.repository.AgentRepo;
 import net.kimleo.grabbie.repository.ExecRepo;
+import net.kimleo.grabbie.service.ExecService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,20 +30,17 @@ public class AgentController {
 
     @Autowired
     private AgentRepo agentRepo;
+
     @Autowired
-    private ExecRepo execRepo;
+    private ExecService execService;
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Agent> createClient(@RequestBody Agent agent) {
         Agent existedAgent = agentRepo.findByUrl(agent.getUrl());
         if (existedAgent != null) {
-            if (existedAgent.getLastActiveTime() != null
-                    && System.currentTimeMillis() - existedAgent.getLastActiveTime().getTime() < 5000) {
+            if (isConflictToExistedAgent(existedAgent)) {
                 LOGGER.warn("Conflict connection found for agent {}", existedAgent);
-                return ResponseEntity
-                        .status(HttpStatus.CONFLICT)
-                        .location(URI.create(navigator.agent(existedAgent.getId())))
-                        .body(existedAgent);
+                return agentConflict(existedAgent);
             } else {
                 LOGGER.warn("Previous connection found for agent {}", existedAgent);
                 agent = existedAgent;
@@ -63,9 +61,18 @@ public class AgentController {
     public ResponseEntity<List<Execution>> getClientExecution(
             @PathVariable("id") Long id,
             @RequestParam(value = "executed", required = false) Boolean executed) {
-        if (executed != null) {
-            return ResponseEntity.ok(execRepo.findByAgentIdAndExecuted(id, executed));
-        }
-        return ResponseEntity.ok(execRepo.findByAgentId(id));
+        return ResponseEntity.ok(execService.getTaskExecution(id, executed));
+    }
+
+    private ResponseEntity<Agent> agentConflict(Agent existedAgent) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .location(URI.create(navigator.agent(existedAgent.getId())))
+                .body(existedAgent);
+    }
+
+    private boolean isConflictToExistedAgent(Agent existedAgent) {
+        return existedAgent.getLastActiveTime() != null
+                && System.currentTimeMillis() - existedAgent.getLastActiveTime().getTime() < 5000;
     }
 }

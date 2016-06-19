@@ -3,6 +3,8 @@ package net.kimleo.grabbie.model;
 import javax.persistence.*;
 import java.util.Date;
 
+import static net.kimleo.grabbie.model.ExecutionStatus.NOT_EXECUTED;
+
 @Entity
 public class Execution {
 
@@ -20,6 +22,8 @@ public class Execution {
     String result;
 
     Boolean executed = false;
+
+    ExecutionStatus status = NOT_EXECUTED;
 
     Date date;
 
@@ -77,6 +81,14 @@ public class Execution {
 
     public void setResult(String result) {
         this.result = result;
+    }
+
+    public ExecutionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ExecutionStatus status) {
+        this.status = status;
     }
 
     @Override

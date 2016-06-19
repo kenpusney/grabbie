@@ -3,6 +3,7 @@ package net.kimleo.grabbie.client.component;
 import net.kimleo.grabbie.client.agent.AgentInfo;
 import net.kimleo.grabbie.component.Navigator;
 import net.kimleo.grabbie.model.Execution;
+import net.kimleo.grabbie.model.ExecutionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,18 +13,17 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import static net.kimleo.grabbie.model.ExecutionStatus.EXECUTED_FAILURE;
+import static net.kimleo.grabbie.model.ExecutionStatus.EXECUTED_SUCCESS;
 
 @Service
 public class TaskService {
-    public static final Logger LOGGER = LoggerFactory.getLogger(TaskService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskService.class);
     @Autowired
     Navigator navigator;
 
@@ -33,37 +33,49 @@ public class TaskService {
     @Autowired
     AgentInfo agentInfo;
 
+    @Autowired
+    ProcService procService;
+
     @Scheduled(fixedDelay = 1000)
     public void taskExecutionLoop() {
-        Execution[] execs = getNotExecutedTasks();
+        Execution[] execs = getNonExecutedExecutions();
         for (Execution exec : execs) {
             LOGGER.info("Execution found: {}", exec);
-            String ExecUrl = navigator.execution(exec.getId());
-            ArrayList<String> command = new ArrayList<>();
-            command.add(exec.getTask().getCommand());
-            command.addAll(Arrays.asList(exec.getTask().getArgs()));
+            ArrayList<String> command = retrieveCommand(exec);
             try {
-                Process process = new ProcessBuilder(command).start();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String result = reader.lines().collect(Collectors.joining("\n"));
+                String result = procService.executeProcess(command);
                 exec.setResult(result);
+                exec.setStatus(EXECUTED_SUCCESS);
                 LOGGER.info("Executed result: {}", result);
             } catch (IOException e) {
-                e.printStackTrace();
+                exec.setResult(e.toString());
+                exec.setStatus(EXECUTED_FAILURE);
+                LOGGER.error("Executed failed with exception", e);
             }
-            exec.setExecuted(true);
-            RequestEntity<Execution> requestEntity = RequestEntity
-                    .put(URI.create(ExecUrl))
-                    .body(exec);
-            restTemplate.exchange(ExecUrl, HttpMethod.PUT, requestEntity, Execution.class);
+            sentExecutedResult(exec);
         }
     }
 
-    private Execution[] getNotExecutedTasks() {
-        Execution[] executions = restTemplate.getForObject(
+    private void sentExecutedResult(Execution exec) {
+        String execUrl = navigator.execution(exec.getId());
+        exec.setExecuted(true);
+        RequestEntity<Execution> requestEntity = RequestEntity
+                .put(URI.create(execUrl))
+                .body(exec);
+        restTemplate.exchange(execUrl, HttpMethod.PUT, requestEntity, Execution.class);
+    }
+
+    private ArrayList<String> retrieveCommand(Execution exec) {
+        ArrayList<String> command = new ArrayList<>();
+        command.add(exec.getTask().getCommand());
+        command.addAll(Arrays.asList(exec.getTask().getArgs()));
+        return command;
+    }
+
+    private Execution[] getNonExecutedExecutions() {
+
+        return restTemplate.getForObject(
                 navigator.agentExecutions(agentInfo.id()) + "?executed={executed}",
                 Execution[].class, false);
-
-        return executions;
     }
 }

@@ -9,10 +9,10 @@ PASS = "password"
 HOST = "localhost"
 PORT = "8080"
 
-CLIENT_ID = "3"
+AGENT_ID = "3"
 
 class Remote(object):
-    def __init__(self, user, pwd, host, port, client_id):
+    def __init__(self, user, pwd, host, port, agent_id):
         self.user = user
         self.pwd = pwd
         self.host = host
@@ -20,11 +20,11 @@ class Remote(object):
 
         self.auth = (user, pwd)
         
-        self.client_id = client_id
+        self.agent_id = agent_id
 
         self.base = "http://" + host + ":" + port
 
-        self.client_url = self.to("/client/"+client_id)
+        self.agent_url = self.to("/agent/"+agent_id)
 
         self.execution = self.to("/execution")
         
@@ -33,7 +33,7 @@ class Remote(object):
         return self.base + url
 
     def connect(self):
-        if requests.get(self.client_url, auth = self.auth):
+        if requests.get(self.agent_url, auth = self.auth):
             pass
 
     def repl(self):
@@ -49,7 +49,7 @@ class Remote(object):
                 response = requests.post(self.to("/execution"),
                                          auth = self.auth,
                                          json = {
-                                             "client": { "id": self.client_id },
+                                             "agent": { "id": self.agent_id },
                                              "task": { "id": task_id }
                                              })
                 self.wait_for_result(response)
@@ -69,4 +69,4 @@ class Remote(object):
                 break
             time.sleep(1)
         
-Remote(USER, PASS, HOST, PORT, CLIENT_ID).repl()
+Remote(USER, PASS, HOST, PORT, AGENT_ID).repl()

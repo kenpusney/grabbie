@@ -3,7 +3,10 @@
 import requests
 import time
 import os
-
+'''
+NOTE:
+    This script will never update for new featuress
+'''
 BASE_URL = "http://localhost:8080"
 
 USER = 'admin'
@@ -12,18 +15,18 @@ PASS = 'password'
 def to(url):
     return BASE_URL + url
 
-class Client(object):
+class Agent(object):
 
     def __init__(self, url):
         self.url = url
-        response = requests.post(to("/client"),
+        response = requests.post(to("/agent"),
                                  auth = (USER, PASS),
                                  json = {"url": url})
         print(response)
-        self.client_url = response.headers["Location"]
+        self.agent_url = response.headers["Location"]
 
     def getUnexecutedTask(self):
-        response = requests.get(to(self.client_url+"/execution"),
+        response = requests.get(to(self.agent_url+"/execution"),
                                 auth = (USER, PASS),
                                 params={"executed": False})
         return Executions(response.json())
@@ -59,11 +62,11 @@ class Execution(object):
 
 
 if __name__ == '__main__':
-    client = Client("localhost")
+    agent = Agent("localhost")
     while True:
         try:
             time.sleep(3)
-            client.getUnexecutedTask().execute()
+            agent.getUnexecutedTask().execute()
         except KeyboardInterrupt:
             print("User Interrupted")
             break

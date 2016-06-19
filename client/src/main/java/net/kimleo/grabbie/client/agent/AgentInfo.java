@@ -4,7 +4,7 @@ import net.kimleo.grabbie.model.Agent;
 import org.springframework.http.ResponseEntity;
 
 public class AgentInfo {
-    Agent agent;
+    private Agent agent;
 
 
     public AgentInfo(Agent agent) {
