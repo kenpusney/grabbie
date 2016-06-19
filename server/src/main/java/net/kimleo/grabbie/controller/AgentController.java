@@ -61,7 +61,7 @@ public class AgentController {
     public ResponseEntity<List<Execution>> getClientExecution(
             @PathVariable("id") Long id,
             @RequestParam(value = "executed", required = false) Boolean executed) {
-        return ResponseEntity.ok(execService.getTaskExecution(id, executed));
+        return ResponseEntity.ok(execService.getAgentExecution(id, executed));
     }
 
     private ResponseEntity<Agent> agentConflict(Agent existedAgent) {

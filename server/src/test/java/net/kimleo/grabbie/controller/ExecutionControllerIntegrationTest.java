@@ -2,11 +2,13 @@ package net.kimleo.grabbie.controller;
 
 import net.kimleo.grabbie.model.Agent;
 import net.kimleo.grabbie.model.Execution;
+import net.kimleo.grabbie.model.ExecutionStatus;
 import net.kimleo.grabbie.model.Task;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static net.kimleo.grabbie.model.ExecutionStatus.EXECUTED_SUCCESS;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -31,6 +33,7 @@ public class ExecutionControllerIntegrationTest extends AbstractWebControllerInt
                         is(agentToExecuteTask.getId().intValue())));
 
         execution.setExecuted(true);
+        execution.setStatus(EXECUTED_SUCCESS);
 
         mockMvc.perform(put(navigator.execution(execution.getId()))
                 .content(json(execution))
