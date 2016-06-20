@@ -4,11 +4,13 @@ import net.kimleo.grabbie.model.Agent;
 import net.kimleo.grabbie.model.Execution;
 import net.kimleo.grabbie.model.ExecutionStatus;
 import net.kimleo.grabbie.model.Task;
+import net.kimleo.grabbie.model.summary.TaskSummary;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static net.kimleo.grabbie.model.ExecutionStatus.EXECUTED_SUCCESS;
+import static net.kimleo.grabbie.model.ExecutionStatus.STARTED;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -20,17 +22,24 @@ public class ExecutionControllerIntegrationTest extends AbstractWebControllerInt
     public void testExecution() throws Exception {
         Agent agentToExecuteTask = agentRepo.save(new Agent("agentToExecuteTask"));
         Task taskToExecute = taskRepo.save(new Task());
+        taskSummaryRepo.save(new TaskSummary(taskToExecute));
 
         Execution execution = execRepo.save(new Execution(agentToExecuteTask, taskToExecute));
         execRepo.save(new Execution(agentToExecuteTask, taskToExecute));
         execRepo.save(new Execution(agentToExecuteTask, taskToExecute));
-
 
         mockMvc.perform(get(String.format("%s?agentId=%d", navigator.execution(), agentToExecuteTask.getId()))
                 .with(auth))
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[0].agent.id",
                         is(agentToExecuteTask.getId().intValue())));
+
+        execution.setStatus(STARTED);
+
+        mockMvc.perform(put(navigator.execution(execution.getId()))
+                .content(json(execution))
+                .contentType(contentType)
+                .with(auth));
 
         execution.setExecuted(true);
         execution.setStatus(EXECUTED_SUCCESS);

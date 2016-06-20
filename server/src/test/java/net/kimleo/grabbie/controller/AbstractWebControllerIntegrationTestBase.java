@@ -5,6 +5,7 @@ import net.kimleo.grabbie.component.Navigator;
 import net.kimleo.grabbie.repository.AgentRepo;
 import net.kimleo.grabbie.repository.ExecRepo;
 import net.kimleo.grabbie.repository.TaskRepo;
+import net.kimleo.grabbie.repository.TaskSummaryRepo;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,8 @@ public class AbstractWebControllerIntegrationTestBase {
     @Autowired
     TaskRepo taskRepo;
     @Autowired
+    TaskSummaryRepo taskSummaryRepo;
+    @Autowired
     ExecRepo execRepo;RequestPostProcessor auth;
     private HttpMessageConverter mappingJackson2HttpMessageConverter;
     @Autowired
@@ -62,6 +65,7 @@ public class AbstractWebControllerIntegrationTestBase {
     public void setup() throws Exception {
         execRepo.deleteAll();
         agentRepo.deleteAll();
+        taskSummaryRepo.deleteAll();
         taskRepo.deleteAll();
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
         auth = httpBasic(user, pass);
