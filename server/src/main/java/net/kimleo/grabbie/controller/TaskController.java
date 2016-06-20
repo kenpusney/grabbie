@@ -10,6 +10,7 @@ import net.kimleo.grabbie.repository.TaskSummaryRepo;
 import net.kimleo.grabbie.service.ExecService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -53,5 +54,10 @@ public class TaskController {
             @PathVariable Long id,
             @RequestParam(value = "executed", required = false) Boolean executed) {
         return ResponseEntity.ok(execService.getTaskExecution(id, executed));
+    }
+
+    @RequestMapping("/summary")
+    public ResponseEntity<List<TaskSummary>> getSummaries(Pageable pageable) {
+        return ResponseEntity.ok(taskSummaries.findAll(pageable).getContent());
     }
 }

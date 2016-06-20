@@ -2,10 +2,12 @@ package net.kimleo.grabbie.model.summary;
 
 import net.kimleo.grabbie.model.Task;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+@Entity
 public class TaskSummary {
     @Id
     @GeneratedValue
