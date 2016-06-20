@@ -3,8 +3,10 @@ package net.kimleo.grabbie.controller;
 import net.kimleo.grabbie.component.Navigator;
 import net.kimleo.grabbie.model.Execution;
 import net.kimleo.grabbie.model.Task;
+import net.kimleo.grabbie.model.summary.TaskSummary;
 import net.kimleo.grabbie.repository.ExecRepo;
 import net.kimleo.grabbie.repository.TaskRepo;
+import net.kimleo.grabbie.repository.TaskSummaryRepo;
 import net.kimleo.grabbie.service.ExecService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,6 +26,9 @@ public class TaskController {
     private TaskRepo taskRepo;
 
     @Autowired
+    private TaskSummaryRepo taskSummaries;
+
+    @Autowired
     private ExecService execService;
 
     @Autowired
@@ -33,6 +38,7 @@ public class TaskController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
         task = taskRepo.save(task);
+        taskSummaries.save(new TaskSummary(task));
         return ResponseEntity.created(URI.create(navigator.task(task.getId())))
                 .body(task);
     }

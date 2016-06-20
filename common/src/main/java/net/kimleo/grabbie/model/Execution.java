@@ -95,6 +95,22 @@ public class Execution {
         this.status = status;
     }
 
+    public Date getTimeStarted() {
+        return timeStarted;
+    }
+
+    public void setTimeStarted(Date timeStarted) {
+        this.timeStarted = timeStarted;
+    }
+
+    public Long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Long duration) {
+        this.duration = duration;
+    }
+
     @Override
     public String toString() {
         return "Execution{" +

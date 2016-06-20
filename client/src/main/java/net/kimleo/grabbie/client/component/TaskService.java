@@ -3,7 +3,6 @@ package net.kimleo.grabbie.client.component;
 import net.kimleo.grabbie.client.agent.AgentInfo;
 import net.kimleo.grabbie.component.Navigator;
 import net.kimleo.grabbie.model.Execution;
-import net.kimleo.grabbie.model.ExecutionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ import java.util.Arrays;
 
 import static net.kimleo.grabbie.model.ExecutionStatus.EXECUTED_FAILURE;
 import static net.kimleo.grabbie.model.ExecutionStatus.EXECUTED_SUCCESS;
+import static net.kimleo.grabbie.model.ExecutionStatus.STARTED;
 
 @Service
 public class TaskService {
@@ -42,6 +42,9 @@ public class TaskService {
         for (Execution exec : execs) {
             LOGGER.info("Execution found: {}", exec);
             ArrayList<String> command = retrieveCommand(exec);
+            String execUrl = navigator.execution(exec.getId());
+            exec.setStatus(STARTED);
+            sendExecutionUpdate(exec);
             try {
                 String result = procService.executeProcess(command);
                 exec.setResult(result);
@@ -52,13 +55,13 @@ public class TaskService {
                 exec.setStatus(EXECUTED_FAILURE);
                 LOGGER.error("Executed failed with exception", e);
             }
-            sentExecutedResult(exec);
+            exec.setExecuted(true);
+            sendExecutionUpdate(exec);
         }
     }
 
-    private void sentExecutedResult(Execution exec) {
+    private void sendExecutionUpdate(Execution exec) {
         String execUrl = navigator.execution(exec.getId());
-        exec.setExecuted(true);
         RequestEntity<Execution> requestEntity = RequestEntity
                 .put(URI.create(execUrl))
                 .body(exec);
