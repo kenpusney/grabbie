@@ -25,6 +25,10 @@ public class Execution {
 
     ExecutionStatus status = NOT_EXECUTED;
 
+    Date timeStarted;
+
+    Long duration;
+
     Date date;
 
     public Execution() {
