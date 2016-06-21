@@ -1,10 +1,10 @@
 package net.kimleo.grabbie.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import net.kimleo.grabbie.model.scheduler.AgentTag;
+
+import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Agent {
@@ -16,6 +16,9 @@ public class Agent {
     String url;
 
     Date lastActiveTime;
+
+    @ManyToMany
+    List<AgentTag> agentTags;
 
     public Agent() {
     }
@@ -46,6 +49,14 @@ public class Agent {
 
     public void setLastActiveTime(Date lastActiveTime) {
         this.lastActiveTime = lastActiveTime;
+    }
+
+    public List<AgentTag> getAgentTags() {
+        return agentTags;
+    }
+
+    public void setAgentTags(List<AgentTag> agentTags) {
+        this.agentTags = agentTags;
     }
 
     @Override

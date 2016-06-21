@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,13 +61,22 @@ public class ExecutionController {
     public ResponseEntity<List<Execution>> getExecutionByClientId(
             @RequestParam(value = "agentId", required = false) Long agentId,
             @RequestParam(value = "taskId", required = false) Long taskId,
-            @RequestParam(value = "executed", required = false) Boolean executed) {
+            @RequestParam(value = "executed", required = false) Boolean executed,
+            Pageable pageable) {
+        if (isRequestWithoutFilter(agentId, taskId)) {
+            return ResponseEntity.ok(execRepo.findAll(pageable).getContent());
+        }
         if (isInvalidFilterRequest(agentId, taskId)) {
             return ResponseEntity.badRequest().body(null);
+        } else {
+            if (agentId != null)
+                return ResponseEntity.ok(execService.getAgentExecution(agentId, executed));
+            else return ResponseEntity.ok(execService.getTaskExecution(taskId, executed));
         }
-        if (agentId != null)
-            return ResponseEntity.ok(execService.getAgentExecution(agentId, executed));
-        else return ResponseEntity.ok(execService.getTaskExecution(taskId, executed));
+    }
+
+    private boolean isRequestWithoutFilter(Long agentId, Long taskId) {
+        return agentId == null && taskId == null;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
@@ -118,6 +128,6 @@ public class ExecutionController {
     }
 
     private boolean isInvalidFilterRequest(Long agentId, Long taskId) {
-        return (agentId != null && taskId != null) || (agentId == null && taskId == null);
+        return (agentId != null && taskId != null);
     }
 }
