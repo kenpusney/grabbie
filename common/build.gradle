@@ -7,11 +7,6 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'idea'
 
-jar {
-    baseName = 'grabbie-common'
-    version = '0.0.1-SNAPSHOT'
-}
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -22,5 +17,6 @@ repositories {
 
 dependencies {
     compile("org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final")
+    compile("com.fastxml.jackson.core:jackson-annotations:2.6.6")
 }
 

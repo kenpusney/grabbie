@@ -1,8 +1,6 @@
 package net.kimleo.grabbie.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Arrays;
 
 @Entity
@@ -12,16 +10,13 @@ public class Task {
     @GeneratedValue
     Long id;
 
-    String command;
-
-    String[] args;
+    String[] command;
 
     public Task() {
     }
 
-    public Task(String command, String[] args) {
+    public Task(String... command) {
         this.command = command;
-        this.args = args;
     }
 
     public Long getId() {
@@ -32,28 +27,18 @@ public class Task {
         this.id = id;
     }
 
-    public String getCommand() {
+    public String[] getCommand() {
         return command;
     }
 
-    public void setCommand(String command) {
+    public void setCommand(String[] command) {
         this.command = command;
-    }
-
-    public String[] getArgs() {
-        return args;
-    }
-
-    public void setArgs(String[] args) {
-        this.args = args;
     }
 
     @Override
     public String toString() {
         return "Task{" +
                 "id=" + id +
-                ", command='" + command + '\'' +
-                ", args=" + Arrays.toString(args) +
                 '}';
     }
 }

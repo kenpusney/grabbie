@@ -1,5 +1,6 @@
 package net.kimleo.grabbie.controller;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import net.kimleo.grabbie.component.Navigator;
 import net.kimleo.grabbie.model.Agent;
 import net.kimleo.grabbie.model.Execution;

@@ -115,11 +115,9 @@ public class Execution {
     public String toString() {
         return "Execution{" +
                 "id=" + id +
-                ", agent=" + agent +
-                ", task=" + task +
-                ", result='" + result + '\'' +
+                ", agent=" + agent.getId() +
+                ", task=" + task.getId() +
                 ", executed=" + executed +
-                ", date=" + date +
                 '}';
     }
 }

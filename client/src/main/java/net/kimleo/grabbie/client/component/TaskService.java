@@ -41,7 +41,7 @@ public class TaskService {
         Execution[] execs = getNonExecutedExecutions();
         for (Execution exec : execs) {
             LOGGER.info("Execution found: {}", exec);
-            ArrayList<String> command = retrieveCommand(exec);
+            String[] command = exec.getTask().getCommand();
             String execUrl = navigator.execution(exec.getId());
             exec.setStatus(STARTED);
             sendExecutionUpdate(exec);
@@ -66,13 +66,6 @@ public class TaskService {
                 .put(URI.create(execUrl))
                 .body(exec);
         restTemplate.exchange(execUrl, HttpMethod.PUT, requestEntity, Execution.class);
-    }
-
-    private ArrayList<String> retrieveCommand(Execution exec) {
-        ArrayList<String> command = new ArrayList<>();
-        command.add(exec.getTask().getCommand());
-        command.addAll(Arrays.asList(exec.getTask().getArgs()));
-        return command;
     }
 
     private Execution[] getNonExecutedExecutions() {

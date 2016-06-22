@@ -33,8 +33,8 @@ public class GrabbieServer {
             Agent fuck = agentRepo.save(new Agent("grabbie://fuck"));
             Agent shit = agentRepo.save(new Agent("grabbie://shit"));
 
-            Task hello = taskRepo.save(new Task("echo", new String[]{"hello world"}));
-            Task ps = taskRepo.save(new Task("ps", new String[]{"aux"}));
+            Task hello = taskRepo.save(new Task("echo", "hello world"));
+            Task ps = taskRepo.save(new Task("ps", "aux"));
 
             taskSummaries.save(new TaskSummary(hello));
             taskSummaries.save(new TaskSummary(ps));

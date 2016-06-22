@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class ProcService {
 
 
-    public String executeProcess(ArrayList<String> command) throws IOException {
+    public String executeProcess(String... command) throws IOException {
         Process process = new ProcessBuilder(command).start();
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         return reader.lines().collect(Collectors.joining("\n"));
