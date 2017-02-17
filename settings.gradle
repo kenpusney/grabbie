@@ -1,4 +1,0 @@
-include 'server'
-include 'common'
-include 'client'
-include 'scheduler'
